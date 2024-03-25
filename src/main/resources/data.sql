@@ -1,0 +1,5 @@
+Insert Into Category (label) values ('shonen')
+Insert Into Category (label) values ('drama')
+Insert Into Category (label) values ('fantastiques')
+Insert Into Category (label) values ('webtoon')
+Insert Into Category (label) values ('action')
