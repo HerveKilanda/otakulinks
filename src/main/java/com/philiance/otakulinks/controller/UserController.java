@@ -30,16 +30,16 @@ public class UserController {
      */
 
     @Autowired
-    private UserRepository userRepository;
+     UserRepository userRepository;
 
     @Autowired
-    private PasswordEncoder passwordEncoder; // Utilise l'encoder de mot de passe injecté
+     PasswordEncoder passwordEncoder; // Utilise l'encoder de mot de passe injecté
 
     @Autowired
-    private JwtController jwtController;
+    JwtController jwtController;
 
     @Autowired
-    private JwtUtils jwtUtils;
+     JwtUtils jwtUtils;
 
 
 
@@ -53,7 +53,7 @@ public class UserController {
         }
         User usersaved = saveUser(newUserData);
         Authentication authentication = jwtController.logUser(newUserData.getEmail(), newUserData.getPassword());
-        String jwt = jwtUtils.generateJwtToken(authentication);
+        String jwt = jwtUtils.generateToken(authentication);
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.add(JwtFilter.AUTHORIZATION_HEADER, "Bearer " + jwt);
         return new ResponseEntity<>(usersaved, HttpStatus.CREATED);

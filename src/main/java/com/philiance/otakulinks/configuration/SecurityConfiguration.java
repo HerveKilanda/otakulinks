@@ -17,36 +17,40 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableWebSecurity
 @Configuration
 public class SecurityConfiguration {
+
     @Autowired
-    JwtFilter  jwtFilter;
-
-
+    JwtFilter jwtFilter;
 
     @Bean
-    SecurityFilterChain webSecurityFilterChain(HttpSecurity http) throws Exception {
+    SecurityFilterChain web(HttpSecurity http) throws Exception {
+        http
+                .csrf().disable()
+                .exceptionHandling()
+                .and()
+                .sessionManagement()
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                .and()
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/").permitAll()
+                        .requestMatchers("/index.html").permitAll()
+                        .requestMatchers("/static/**").permitAll()
+                        .requestMatchers("/users").permitAll()
+                        .requestMatchers("/authenticate").permitAll()
+                        .requestMatchers("/isConnected").permitAll()
+                        .requestMatchers("/v3/api-docs/**").permitAll()
+                        .requestMatchers("/api-docs.yaml").permitAll()
+                        .requestMatchers("/swagger-resources/**").permitAll()
+                        .requestMatchers("/swagger-ui/**").permitAll()
+                        .requestMatchers("/swagger-ui.html").permitAll()
+                        .requestMatchers("/webjars/**").permitAll()
+                        .requestMatchers("/v3/api-docs/swagger-config").permitAll()
+                        .anyRequest().authenticated()
 
-         http
-                .csrf(Customizer.withDefaults())
-                .exceptionHandling(Customizer.withDefaults())
-                .sessionManagement(httpSecuritySessionManagementConfigurer -> httpSecuritySessionManagementConfigurer
-                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                 .authorizeHttpRequests(auth ->auth
-                         .requestMatchers("/users").permitAll()
-                         .requestMatchers("/authenticate").permitAll()
-                         .requestMatchers("/isConnected").permitAll()
-                         .requestMatchers("/v3/api-docs/**").permitAll()
-                         .requestMatchers("/api-docs.yaml").permitAll()
-                         .requestMatchers("/swagger-resources/**").permitAll()
-                         .requestMatchers("/swagger-ui/**").permitAll()
-                         .requestMatchers("/swagger-ui.html").permitAll()
-                         .requestMatchers("/webjars/**").permitAll()
-                         .requestMatchers("/v3/api-docs/swagger-config").permitAll()
-                         .anyRequest().authenticated()
-                 );
-         http.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
-         return http.build();
-
+                );
+        http.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
+        return http.build();
     }
+
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
